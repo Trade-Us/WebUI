@@ -1,54 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
-  
-  <head>
-    <meta charset="UTF-8" />
-    <title>주식 가격예측 Trading Bot</title>
-    <!-- Import Styles -->
-    <link rel="stylesheet" href="./assets/styles.css" />
-    <link rel="stylesheet" type="text/css" href="resources/index_test.css">
-    <!-- Import Vue.js -->
-    <script src="https://unpkg.com/vue@3.0.0-beta.12/dist/vue.global.js"></script>
-  
-  </head>
-  <body>
-      <!-- Title 및 프로젝트 설명 -->
-      <div class="wrap">
-        <header>
-            <div class="innerHeader">
-                <h1 class="logo"><a href="#"><span style="color:orangered">DQN</span>을 활용한 가격 예측</a></h1>
-                
-                
-            </div>
-            
-            <div class="related">
-                <a href="#"><p></p></a>
-                <a href="#"><p></p></a>
-            </div>
-            <br><br><br><br>
-            <h3 style="text-align: center;">AI를 활용한 주식 가격 예측 및 수익을 극대화 하는 주식 Trading Bot 개발</h3>
-        </header>
-        
-        <br>
-        
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- Boot Strap Link -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <title>주식 가격예측 Trading Bot</title>
+  <!-- Import Styles -->
+  <link rel="stylesheet" href="./assets/styles.css" />
+  <link rel="stylesheet" type="text/css" href="resources/index_test.css">
+  <!-- Import Vue.js -->
+  <script src="https://unpkg.com/vue@3.0.0-beta.12/dist/vue.global.js"></script>
+
+</head>
+
+<body>
+  <div>
+    <!-- Title 및 프로젝트 설명 -->
+    <div class="wrap">
+      <header>
+        <div class="innerHeader">
+          <h1 class="logo"><a href="#"><span style="color:orangered">DQN</span>을 활용한 가격 예측</a></h1>
+
+
+        </div>
+
+        <div class="related">
+          <a href="#">
+            <p></p>
+          </a>
+          <a href="#">
+            <p></p>
+          </a>
+        </div>
+        <br><br><br><br>
+        <h3 style="text-align: center;">AI를 활용한 주식 가격 예측 및 수익을 극대화 하는 주식 Trading Bot 개발</h3>
+      </header>
+
+      <br>
+
     </div>
-      <!-- Title 및 프로젝트 설명 -->
+    <!-- Title 및 프로젝트 설명 -->
 
-      <!-- 파일 첨부란 작성 -->
-      <div class="input-train-file" 
-      style="position: absolute; left: 50%; border: solid 1px gray; width:50%; height: fit-content; margin-left: -25%">
-        <form>
-          <label for="trainFile" style="margin:10px">훈련데이터 파일을 업로드 해주세요 (.csv)</label></br>
-          <input style="margin: 10px; width: 500px;"type="file" id="trainFile" name="trainFile" accept=".csv">
-          <input type="submit" style="float: right; margin:10px; width: 100px" value="훈련 시작">
-        </form>
-      </div>
-      <!-- 파일 첨부란 작성 -->
+    <!-- 파일 첨부란 작성 -->
+    <div class="input-train-file"
+      style="left: 50%; border: solid 1px gray; width:60%; height: fit-content; margin-left: 20%; margin-top: 10px;">
+      <form>
+        <label for="trainFile" style="margin:10px">훈련데이터 파일을 업로드 해주세요 (.csv)</label></br>
+        <input style="margin: 10px; width: 500px;" type="file" id="trainFile" name="trainFile" accept=".csv">
+        <input type="submit" style="float: right; margin:10px; width: 100px" value="훈련 시작">
+      </form>
+    </div>
+    <!-- 파일 첨부란 작성 -->
 
-      <!-- LSTM 결과 및 Trading BOt 실행 버튼 -->
-      <!-- LSTM 결과 및 Trading BOt 실행 버튼 -->
+    <!-- LSTM 결과 및 Trading BOt 실행 버튼 -->
+    <!-- LSTM 결과 및 Trading BOt 실행 버튼 -->
 
-      <!-- Trading 결과 -->
-      <!-- Trading 결과 -->
-  </body>
+    <!-- Trading 결과 -->
+    <div style="margin-top: 3rem; margin-left: 20%; margin-right: 20%;">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Date</th>
+            <th scope="col">Action</th>
+            <th scope="col">Profit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>{{ date }}</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>{{ date }}</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>{{ date }}</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+          </tr>
+          <tr>
+            <th scope="row">4</th>
+            <td>{{ date }}</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">5</th>
+            <td>{{ date }}</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">6</th>
+            <td>{{ date }}</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">7</th>
+            <td>{{ date }}</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+          </tr>
+          <tr>
+            <th scope="row">8</th>
+            <td>{{ date }}</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">9</th>
+            <td>{{ date }}</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">10</th>
+            <td>{{ date }}</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Trading 결과 -->
+  </div>
+</body>
+
 </html>
