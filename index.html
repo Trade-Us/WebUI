@@ -58,82 +58,43 @@
     <!-- LSTM 결과 및 Trading BOt 실행 버튼 -->
 
     <!-- Trading 결과 -->
-    <div style="margin-top: 3rem; margin-left: 20%; margin-right: 20%;">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Date</th>
-            <th scope="col">Action</th>
-            <th scope="col">Profit</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>{{ date }}</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>{{ date }}</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>{{ date }}</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">4</th>
-            <td>{{ date }}</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <th scope="row">5</th>
-            <td>{{ date }}</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <th scope="row">6</th>
-            <td>{{ date }}</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <th scope="row">7</th>
-            <td>{{ date }}</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">8</th>
-            <td>{{ date }}</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <th scope="row">9</th>
-            <td>{{ date }}</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <th scope="row">10</th>
-            <td>{{ date }}</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-        </tbody>
-      </table>
+    <div id="app">
+      <div style="margin-top: 3rem; margin-left: 20%; margin-right: 20%;" >
+        <table class="table table-hover" v-show="showDQNResult">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Date</th>
+              <th scope="col">Action</th>
+              <th scope="col">Profit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">example</th>
+              <td>{{ date }}</td>
+              <td>Otto</td>
+              <td>@mdo</td>
+            </tr>
+            <tr v-for="(tradeInfo, index) in tradingResult">
+              <th scope="row">{{ index + 1 }}</th>
+              <td>{{ tradeInfo.date }}</td>
+              <td>{{ tradeInfo.action }}</td>
+              <td>{{ tradeInfo.profit }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <!-- Trading 결과 -->
   </div>
+  <!-- Import App -->
+  <script src="./main.js"></script>
+
+  <!-- Mount App -->
+  <script>
+    const mountedApp = app.mount('#app')
+  </script>
 </body>
 
 </html>
