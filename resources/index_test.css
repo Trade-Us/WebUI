@@ -1,5 +1,6 @@
 @charset "utf-8";
 @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gugi&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Black+Han+Sans&family=Gugi&display=swap');
 /* 리셋  */
 * { margin: 0; padding: 0; }
 li { list-style: none; }
@@ -60,4 +61,25 @@ header {
     margin-top: 23px;
     padding: 10px 20px;
     border: 1px solid #ddd;
+}
+
+/*버튼*/
+button{
+    width:150px;
+    height:50px;
+    color: #fff;
+    background: #004fff;
+    font-size: 25px;
+    font-family: 'Bangers', cursive;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(0,79,225,0.3);
+    transition: 0.3s;
+    left:50px;
+    right:50px;
+}
+button:hover{
+    background: rgba(0,79,225,0.9);
+    cursor:pointer;
+    box-shadow: 0 2px 4px rgba(0,79,255,0.6);
 }
