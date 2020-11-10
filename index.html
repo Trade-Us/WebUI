@@ -21,6 +21,7 @@
     <!-- Title 및 프로젝트 설명 -->
     <div class="wrap">
       <header>
+        <br>
         <div class="innerHeader">
           <h1 class="logo"><a href="#"><span style="color:orangered">DQN</span>을 활용한 가격 예측</a></h1>
         </div>
@@ -43,8 +44,9 @@
     <!-- Title 및 프로젝트 설명 -->
 
     <!-- 파일 첨부란 작성 -->
+    <br><br><br>
     <div class="input-train-file"
-      style="left: 50%; border: solid 1px gray;   margin-right:20%;margin-left: 20%; margin-top: 10px;">
+      style=" background: lightgray; border-radius: 10px; left: 50%; margin-right:20%;margin-left: 20%; margin-top: 10px;">
       <form>
         <label for="trainFile" style="margin:10px">훈련데이터 파일을 업로드 해주세요 (.csv)</label></br>
         <input style="margin: 10px; " type="file" id="trainFile" name="trainFile" accept=".csv">
@@ -55,7 +57,7 @@
 
     <!-- LSTM 결과 및 Trading BOt 실행 버튼 -->
 
-    <br><br><br><br><br>
+    <br><br><br>
     <div  class="chart-container" style="width: 60%;margin-top: 3rem; margin-left: 20%; margin-right: 20%;">
       <canvas id="myChart" ></canvas>
 <script>
@@ -103,13 +105,10 @@ var myChart = new Chart(ctx, {
 });
 </script>
     </div>
-    <br><br><br>
-
+    <br>
     <div class="trading_bot_start"
-      style="left: 50%; border: solid 1px gray; width:60%; height: fit-content; margin-left: 20%; margin-top: 10px;">
-      <form style="text-align: center;">
-        <input type="submit" style=" margin:10px; width: 100px" value="start trading">
-      </form>
+      style=" text-align:center; width: 60%;margin-top: 3rem; margin-left: 20%; margin-right: 20%;">
+      <button>Start Trading</button>
     </div>
     
     <!-- LSTM 결과 및 Trading BOt 실행 버튼 -->
