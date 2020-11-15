@@ -25,12 +25,14 @@ from keras.layers import LSTM, Dropout, Dense, Activation
 import datetime
 app = Flask(__name__)
 
+# jinja 연동하기 위한 Bracket 설정 (jQuery)
 jinja_options = app.jinja_options.copy()
 jinja_options.update(dict(
     variable_start_string='((',
     variable_end_string='))'
 ))
 app.jinja_options = jinja_options
+
 # 메인 페이지 라우팅
 
 
@@ -285,7 +287,9 @@ def make_prediction():
             seq_in = np.delete(seq_in, [0, 0], axis=0)
             pred[i, 0] = pred_out[0, 0]
 
+        # 역정규화
         counter_normalize = (pred * (max_price + min_price)) + min_price
+
         # 숫자가 10일 경우 0으로 처리
         #if label == '10': label = '0'
         for i in range(0, 10):
