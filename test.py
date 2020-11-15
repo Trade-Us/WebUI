@@ -1,5 +1,6 @@
 # dqn
 import pickle
+import datetime as dt
 import time as t
 import argparse
 import re
@@ -41,7 +42,7 @@ def index():
 
 @app.route('/predict/DQN', methods=['POST'])
 def run_DQN():
-    global public_label
+
     #global time
     #parser = argparse.ArgumentParser()
     # parser.add_argument('-e', '--episode', type=int, default=2000,
@@ -171,14 +172,22 @@ def run_DQN():
 
     # dqnresult = str(portfol_val[index][0]) + " " + \
     #    str(max_v)+"원 "+str(index+1)+"번째 에피소드"
+
+    today = dt.datetime.today()
+    step = 0
     dqnresult = []
-    for action in portfol_val[index][0]:
+    while step < len(portfol_val[index][0]):
+        action = portfol_val[index][0][step]
         if action == 0:
-            dqnresult.append("Sell")
+            action = "Sell"
         elif action == 1:
-            dqnresult.append("Hold")
+            action = "Hold"
         elif action == 2:
-            dqnresult.append("Buy")
+            action = "Buy"
+        profit = public_label[step] - initial_invest
+        step += 1
+        date = (today + dt.timedelta(days=step)).strftime("%Y-%m-%d")
+        dqnresult.append([date, action, profit])
 
     return render_template('index.html', labe=public_label, dqnResult=dqnresult)
 
@@ -279,9 +288,8 @@ def make_prediction():
         counter_normalize = (pred * (max_price + min_price)) + min_price
         # 숫자가 10일 경우 0으로 처리
         #if label == '10': label = '0'
-        global public_label
         for i in range(0, 10):
-            public_label += str(counter_normalize[i, 0]) + " "
+            public_label.append(counter_normalize[i, 0])
         # 결과 리턴
         return render_template('index.html', labe=public_label)
 
@@ -300,6 +308,6 @@ if __name__ == '__main__':
     model.compile(loss='mse', optimizer='rmsprop')
     model.load_weights('lstmweights/202011072326-lstm.h5')
 
-    public_label = ""
+    public_label = []
     # Flask 서비스 스타트
     app.run(host='127.0.0.1', port=8000, debug=True)

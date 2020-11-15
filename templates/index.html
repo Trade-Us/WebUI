@@ -71,16 +71,18 @@
             labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
             datasets: [{
               label: '10일 예측 결과',
-              data: [((labe.split(' ')[0])),
-              ((labe.split(' ')[1])),
-              ((labe.split(' ')[2])),
-              ((labe.split(' ')[3])),
-              ((labe.split(' ')[4])),
-              ((labe.split(' ')[5])),
-              ((labe.split(' ')[6])),
-              ((labe.split(' ')[7])),
-              ((labe.split(' ')[8])),
-              ((labe.split(' ')[9]))],
+              data: [
+                ((labe[0])),
+                ((labe[1])),
+                ((labe[2])),
+                ((labe[3])),
+                ((labe[4])),
+                ((labe[5])),
+                ((labe[6])),
+                ((labe[7])),
+                ((labe[8])),
+                ((labe[9]))
+              ],
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -132,7 +134,6 @@
     <!-- LSTM 결과 및 Trading BOt 실행 버튼 -->
 
     <!-- Trading 결과 -->
-
     <div style="margin-top: 3rem; margin-left: 20%; margin-right: 20%;">
       <table class="table table-hover" v-if=1>
         <thead>
@@ -144,12 +145,12 @@
           </tr>
         </thead>
         <tbody>
-          {% for item in dqnResult%}
+          {% for result in dqnResult%}
           <tr>
             <th scope="row"> ((loop.index)) </th>
-            <td>{{ tradeInfo.date }} </td>
-            <td> (( item )) </td>
-            <td> {{ tradeInfo.profit }} </td>
+            <td> (( result[0] )) </td>
+            <td> (( result[1] )) </td>
+            <td> (( result[2] )) </td>
           </tr>
           {% endfor %}
 
@@ -160,13 +161,6 @@
     <br><br><br><br>
     <!-- Trading 결과 -->
   </div>
-  <!-- Import App -->
-  <script src="(( url_for('static', filename = 'main.js') ))"></script>
-  <script src="../static/main.js"></script>
-  <!-- Mount App -->
-  <script>
-    const mountedApp = app.mount('#app')
-  </script>
 </body>
 
 </html>
