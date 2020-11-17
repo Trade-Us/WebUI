@@ -177,20 +177,27 @@ def run_DQN():
 
     today = dt.datetime.today()
     step = 0
+    stock_num = 0
+    exchange = initial_invest
     dqnresult = []
-    while step < len(portfol_val[index][0]):
-        action = portfol_val[index][0][step]
+    while step < len(portfol_val[index][0]) + 1:
+        action = portfol_val[index][0][step] if step < len(portfol_val[index][0]) else 1
         if action == 0:
             action = "Sell"
+            exchange = public_label[step] * stock_num if stock_num > 0 else exchange
+            stock_num = 0
         elif action == 1:
             action = "Hold"
         elif action == 2:
             action = "Buy"
-        profit = public_label[step] - initial_invest
+            if exchange > public_label[step]:
+                stock_num = exchange // public_label[step] 
+                exchange -= stock_num * public_label[step]
+        get_val = (public_label[step] * stock_num) + exchange
+        profit = get_val - initial_invest
         step += 1
         date = (today + dt.timedelta(days=step)).strftime("%Y-%m-%d")
-        dqnresult.append([date, action, profit])
-
+        dqnresult.append([date, action, get_val, profit])
     return render_template('index.html', labe=public_label, dqnResult=dqnresult)
 
 # 데이터 예측 처리
