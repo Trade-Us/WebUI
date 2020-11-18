@@ -68,7 +68,7 @@
         var myChart = new Chart(ctx, {
           type: 'line',
           data: {
-            labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+            labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
             datasets: [{
               label: '10일 예측 결과',
               data: [
@@ -111,7 +111,7 @@
             scales: {
               yAxes: [{
                 ticks: {
-                  beginAtZero: true
+                  beginAtZero: false
                 }
               }]
             }
@@ -141,6 +141,7 @@
             <th scope="col">#</th>
             <th scope="col">Date</th>
             <th scope="col">Action</th>
+            <th scope="col">Currency</th>
             <th scope="col">Profit</th>
           </tr>
         </thead>
@@ -151,6 +152,7 @@
             <td> (( result[0] )) </td>
             <td> (( result[1] )) </td>
             <td> (( result[2] )) </td>
+            <td> (( result[3] )) </td>
           </tr>
           {% endfor %}
 
