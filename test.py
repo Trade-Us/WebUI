@@ -172,19 +172,21 @@ def run_DQN():
     print("Maximum Action & Value & index")
     print(portfol_val[index][0], max_v, index)
 
-    # dqnresult = str(portfol_val[index][0]) + " " + \
-    #    str(max_v)+"원 "+str(index+1)+"번째 에피소드"
-
+    ### POST RESULT ###
     today = dt.datetime.today()
     step = 0
     stock_num = 0
     exchange = initial_invest
     dqnresult = []
-    while step < len(portfol_val[index][0]) + 1:
-        action = portfol_val[index][0][step] if step < len(portfol_val[index][0]) else 1
+    date = (today + dt.timedelta(days=step+1)).strftime("%Y-%m-%d")
+    dqnresult.append([date, "", initial_invest, 0.0])
+    while step < len(portfol_val[index][0]) :
+        action = portfol_val[index][0][step] 
+        step += 1
+        if step == 10: break
         if action == 0:
             action = "Sell"
-            exchange = public_label[step] * stock_num if stock_num > 0 else exchange
+            exchange = public_label[step] * stock_num + exchange if stock_num > 0 else exchange
             stock_num = 0
         elif action == 1:
             action = "Hold"
@@ -193,11 +195,12 @@ def run_DQN():
             if exchange > public_label[step]:
                 stock_num = exchange // public_label[step] 
                 exchange -= stock_num * public_label[step]
-        get_val = (public_label[step] * stock_num) + exchange
-        profit = get_val - initial_invest
-        step += 1
-        date = (today + dt.timedelta(days=step)).strftime("%Y-%m-%d")
+        get_val = round((public_label[step] * stock_num) + exchange, 2)
+        profit = round(get_val - initial_invest, 2)
+        #step += 1
+        date = (today + dt.timedelta(days=step+1)).strftime("%Y-%m-%d")
         dqnresult.append([date, action, get_val, profit])
+    ### POST RESULT ###
     return render_template('index.html', labe=public_label, dqnResult=dqnresult)
 
 # 데이터 예측 처리
