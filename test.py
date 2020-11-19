@@ -186,7 +186,11 @@ def run_DQN():
         if step == 10: break
         if action == 0:
             action = "Sell"
-            exchange = public_label[step] * stock_num + exchange if stock_num > 0 else exchange
+            if stock_num > 0:
+                 exchange = public_label[step] * stock_num + exchange 
+            else:
+                 exchange = exchange
+                 action = "Hold"
             stock_num = 0
         elif action == 1:
             action = "Hold"
@@ -195,6 +199,8 @@ def run_DQN():
             if exchange > public_label[step]:
                 stock_num = exchange // public_label[step] 
                 exchange -= stock_num * public_label[step]
+            else:
+                action = "Hold"
         get_val = round((public_label[step] * stock_num) + exchange, 2)
         profit = round(get_val - initial_invest, 2)
         #step += 1
@@ -231,15 +237,6 @@ def make_prediction():
         result = []
         for index in range(len(mid_prices) - sequence_length):
             result.append(mid_prices[index:index + sequence_length])
-        '''
-        #최종적으로 예측하기전의 100일 데이터 및 정규화
-        predicting_data = []
-        predicting_data.append(mid_prices[-100:])
-        temp_data = []
-        temp_window = [(float(p) - min_price) / (max_price + min_price) for p in predicting_data]
-        temp_data.append(temp_window)
-        predicting_data = np.array(temp_data)
-        '''
 
         # 역정규화 위한 정규화
         normalized_data = []
@@ -284,31 +281,6 @@ batch_size=10, #한번에 10개씩 묶어서 학습시킨다
             seq_in = np.delete(seq_in, [0,0], axis = 0)
             pred[i,0] = pred_out[0,0]
 
-        ''' origin
-        origin_seq_in = np.array(x_test)
-        seq_in = origin_seq_in[0]
-        seq_count = 0
-
-        seq_out = seq_in
-        pred = np.zeros((100, 1))
-        for i in range(60):
-            seq_count = seq_count + 1
-            if seq_count % 10 == 0:
-                seq_in = origin_seq_in[seq_count]
-            sample_in = np.array(seq_in)
-            sample_in = np.reshape(sample_in, (1, 100, 1))
-
-            pred_out = model.predict(sample_in)
-
-            # print(pred_out)
-            seq_in = np.append(seq_in, pred_out, axis=0)
-
-            # seq_in.append(pred_out[0,0])
-            # seq_in.pop(0)
-            seq_in = np.delete(seq_in, [0, 0], axis=0)
-            pred[i, 0] = pred_out[0, 0]    '''
-
-
         # 역정규화
         counter_normalize = (pred * (max_price + min_price)) + min_price
         counter_normalize = counter_normalize.tolist()
@@ -319,6 +291,7 @@ batch_size=10, #한번에 10개씩 묶어서 학습시킨다
         counter_normalize = np.array(counter_normalize)
         # 숫자가 10일 경우 0으로 처리
         #if label == '10': label = '0'
+        public_label.clear()
         for i in range(1, 11):
 
             public_label.append(float(counter_normalize[i, 0]))
@@ -338,7 +311,7 @@ if __name__ == '__main__':
     model.add(Dense(1, activation='linear'))
 #              ---output 개수: 다음날 하루의 output
     model.compile(loss='mse', optimizer='rmsprop')
-    model.load_weights('lstmweights/202011072326-lstm.h5')
+    #model.load_weights('lstmweights/202011072326-lstm.h5')
 
     public_label = []
     # Flask 서비스 스타트
