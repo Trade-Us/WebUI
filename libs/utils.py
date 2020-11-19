@@ -10,7 +10,7 @@ def get_data(col='predicted'):
  # ibm = pd.read_csv('data/daily_IBM.csv', usecols=[col])
  # qcom = pd.read_csv('data/daily_QCOM.csv', usecols=[col])
   # recent price are at top; reverse it
-  return np.array([msft[col].values[::-1]])
+  return np.array([msft[col].values[:]])
   #                 ibm[col].values[::-1],
    #                qcom[col].values[::-1]]
 

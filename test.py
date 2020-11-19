@@ -213,8 +213,8 @@ def make_prediction():
         file = request.files["trainFile"]
         if not file:
             return render_template('index.html', labe="No Files")
-        file.save("./lstmweights/"+file.filename)
-        data = pd.read_csv('./lstmweights/'+file.filename)  # csv파일 로드
+        file.save("./data/"+file.filename)
+        data = pd.read_csv('./data/'+file.filename)  # csv파일 로드
 
         high_prices = data['High'].values
         low_prices = data['Low'].values
@@ -231,6 +231,15 @@ def make_prediction():
         result = []
         for index in range(len(mid_prices) - sequence_length):
             result.append(mid_prices[index:index + sequence_length])
+        '''
+        #최종적으로 예측하기전의 100일 데이터 및 정규화
+        predicting_data = []
+        predicting_data.append(mid_prices[-100:])
+        temp_data = []
+        temp_window = [(float(p) - min_price) / (max_price + min_price) for p in predicting_data]
+        temp_data.append(temp_window)
+        predicting_data = np.array(temp_data)
+        '''
 
         # 역정규화 위한 정규화
         normalized_data = []
@@ -241,15 +250,6 @@ def make_prediction():
             normalized_data.append(normalized_window)
         result = np.array(normalized_data)
 
-        # 기존 정규화
-        # normalized_data = []
-        # for window in result:
-        #     normalized_window = [((float(p) / float(window[0])) - 1)
-        #                          for p in window]
-        #     normalized_data.append(normalized_window)
-
-        # result = np.array(normalized_data)
-
         row = int(round(result.shape[0] * 0.9))  # 전체 데이터의 90%를 트레이닝셋
         train = result[:row, :]
         np.random.shuffle(train)  # 랜덤으로 섞는다
@@ -259,20 +259,32 @@ def make_prediction():
         y_train = train[:, -1]  # 나머지 1일 예측
 
         x_test = result[row:, :-1]
+        x_predict = result[row:,-100:]
         x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
         y_test = result[row:, -1]
 
-        # 이미지 픽셀 정보 읽기
-        # 알파 채널 값 제거 후 1차원 Reshape
-#         img = imageio.imread('./lstmweights/'+file.filename)
-#         img = img[:, :, :3]
-#         img = img.reshape(1, -1)
+        model.summary()
+        model.fit(x_train, y_train, validation_data=(x_test, y_test),
+batch_size=10, #한번에 10개씩 묶어서 학습시킨다
+    epochs=5) #20번 반복
 
-#         # 입력 받은 이미지 예측
-#         prediction = model.predict(img)
+        x_test_= result[:, -100:]
+        x_test_ = np.reshape(x_test_, (x_test_.shape[0], x_test_.shape[1], 1))
+        #new
+        origin_seq_in = np.array(x_test_)
+        seq_in = origin_seq_in[-1]
+        seq_out = seq_in
+        pred = np.zeros((10,1))
+        for i in range(0,10):
+            sample_in = np.array(seq_in)
+            sample_in = np.reshape(sample_in,(1,100,1))
+            pred_out = model.predict(sample_in)
+           
+            seq_in = np.append(seq_in,pred_out,axis=0)
+            seq_in = np.delete(seq_in, [0,0], axis = 0)
+            pred[i,0] = pred_out[0,0]
 
-#         # 예측 값을 1차원 배열로부터 확인 가능한 문자열로 변환
-#         label = str(np.squeeze(prediction))
+        ''' origin
         origin_seq_in = np.array(x_test)
         seq_in = origin_seq_in[0]
         seq_count = 0
@@ -282,7 +294,6 @@ def make_prediction():
         for i in range(60):
             seq_count = seq_count + 1
             if seq_count % 10 == 0:
-
                 seq_in = origin_seq_in[seq_count]
             sample_in = np.array(seq_in)
             sample_in = np.reshape(sample_in, (1, 100, 1))
@@ -295,15 +306,22 @@ def make_prediction():
             # seq_in.append(pred_out[0,0])
             # seq_in.pop(0)
             seq_in = np.delete(seq_in, [0, 0], axis=0)
-            pred[i, 0] = pred_out[0, 0]
+            pred[i, 0] = pred_out[0, 0]    '''
+
 
         # 역정규화
         counter_normalize = (pred * (max_price + min_price)) + min_price
+        counter_normalize = counter_normalize.tolist()
+        counter_normalize.insert(0,["predicted"])
 
+        dataframe = pd.DataFrame(counter_normalize)
+        dataframe.to_csv("data/LSTM_predicted.csv",header=False,index=False)
+        counter_normalize = np.array(counter_normalize)
         # 숫자가 10일 경우 0으로 처리
         #if label == '10': label = '0'
-        for i in range(0, 10):
-            public_label.append(counter_normalize[i, 0])
+        for i in range(1, 11):
+
+            public_label.append(float(counter_normalize[i, 0]))
         # 결과 리턴
         return render_template('index.html', labe=public_label)
 
