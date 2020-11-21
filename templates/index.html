@@ -16,6 +16,16 @@
   <!--<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>-->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 
+  <style>
+  .example div {
+    display : inline-block;
+    border : 2px dotted orangered ;
+    background : powderblue;
+    margin : 10px;
+    
+    }
+  </style>
+
 </head>
 
 <body>
@@ -48,12 +58,26 @@
     <!-- 파일 첨부란 작성 -->
     <br><br><br>
     <div class="input-train-file"
-      style=" background: lightgray; border-radius: 10px; left: 50%; margin-right:20%;margin-left: 20%; margin-top: 10px;">
+      style=" background: tomato ; border-radius: 10px; left: 50%; margin-right:20%;margin-left: 20%; margin-top: 10px;">
+      <div class="inner" style="display:inline-block; background:lightgray; border-radius: 10px; margin: 20px; padding: 10px;">
       <form action="/predict" method="POST" enctype="multipart/form-data">
-        <label for="trainFile" style="margin:10px">훈련데이터 파일을 업로드 해주세요 (.csv)</label></br>
-        <input style="margin: 10px; " type="file" id="trainFile" name="trainFile" accept=".csv">
-        <input type="submit" style="float: right; margin:10px; width: 100px" value="훈련 시작">
+        <label for="trainFile">훈련데이터 파일을 업로드 해주세요 (.csv)</label></br>
+        <input type="file" id="trainFile" name="trainFile" accept=".csv">
+        <input type="submit" style="float: right; width: 100px" value="훈련 시작">
       </form>
+      </div>
+      <div class="inner" style="display:inline-block; background:lightgray; border-radius: 10px; margin: 20px; padding: 10px; width: 300px;">
+        <form action="/predict" method="POST" enctype="multipart/form-data">
+          <label for="trainFile"">최근 1년 (.csv)</label></br>
+          Samsung Electronics Co., Ltd.<a href="https://query1.finance.yahoo.com/v7/finance/download/005930.KS?period1=1574329632&period2=1605952032&interval=1d&events=history&includeAdjustedClose=true"><button type="button" style=" margin:10px; ">Download</button></a>
+          SK hynix, Inc.<a href="https://query1.finance.yahoo.com/v7/finance/download/000660.KS?period1=1574330551&period2=1605952951&interval=1d&events=history&includeAdjustedClose=true"><button type="button" style=" margin:10px; ">Download</button></a>
+          Kakao Corp. <a href="https://query1.finance.yahoo.com/v7/finance/download/035720.KS?period1=1574330495&period2=1605952895&interval=1d&events=history&includeAdjustedClose=true"><button type="button" style=" margin:10px; ">Download</button></a>
+          LG Household & Health Care Ltd. <a href="https://query1.finance.yahoo.com/v7/finance/download/051900.KS?period1=1574330610&period2=1605953010&interval=1d&events=history&includeAdjustedClose=true"><button type="button" style=" margin:10px; ">Download</button></a>
+          NAVER Corporation <a href="https://query1.finance.yahoo.com/v7/finance/download/035420.KS?period1=1574330695&period2=1605953095&interval=1d&events=history&includeAdjustedClose=true"><button type="button" style=" margin:10px; ">Download</button>
+
+        </form>
+
+      </div>
     </div>
     <!-- 파일 첨부란 작성 -->
 
