@@ -47,20 +47,43 @@
 
     <!-- 파일 첨부란 작성 -->
     <br><br><br>
-    <div class="input-train-file"
-      style=" background: lightgray; border-radius: 10px; left: 50%; margin-right:20%;margin-left: 20%; margin-top: 10px;">
-      <form action="/predict" method="POST" enctype="multipart/form-data">
-        <label for="trainFile" style="margin:10px">훈련데이터 파일을 업로드 해주세요 (.csv)</label></br>
-        <input style="margin: 10px; " type="file" id="trainFile" name="trainFile" accept=".csv">
-        <input type="submit" style="float: right; margin:10px; width: 100px" value="훈련 시작">
-      </form>
+    <div id="example-1" style="height: 100px;">
+      <button @click="show = !show">
+        고급옵션
+      </button>
+      <div class="input-train-file">
+        <form action="/predict" method="POST" enctype="multipart/form-data">
+          <label for="trainFile" style="margin:10px">훈련데이터 파일을 업로드 해주세요 (.csv)</label></br>
+          <input style="margin: 10px; " type="file" id="trainFile" name="trainFile" accept=".csv">
+          <input type="submit" style="float: right; margin:10px; width: 100px" value="훈련 시작">
+          <div class="example" style="background-color: white;">
+            <transition name="slide-fade">
+              <fieldset style="width:fit-content" v-if="show">
+                <legend>LSTM Options</legend>
+                Epoch :
+                <input type="range" min="5" max="1000" step="10" name="EPOCH">
+                Batch_size :
+                <input type="radio" name="BATCHSIZE" value="32">32
+                <input type="radio" name="BATCHSIZE" value="64">64
+                <input type="radio" name="BATCHSIZE" value="128">128
+                Window :
+                <input type="number" min="0" max="100" step="10" name="WINDOW" value="100">
+                Predict Period :
+                <input type="number" min="10" max="20" step="1" name="PREDICT_PERIOD" value="10">
+              </fieldset>
+            </transition>
+          </div>
+        </form>
+      </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="../temp.css" />
     <!-- 파일 첨부란 작성 -->
 
-    <!-- LSTM 결과 및 Trading BOt 실행 버튼 -->
+    <!-- LSTM 결과 -->
 
     <br><br><br>
-    <div class="chart-container" style="width: 60%;margin-top: 3rem; margin-left: 20%; margin-right: 20%;">
+    <div class="chart-container" style="width: 60%;margin-top: 5%; margin-left: 20%; margin-right: 20%;">
       <canvas id="myChart"></canvas>
       {%if labe%}
       <script>
@@ -121,20 +144,47 @@
       {%endif%}
     </div>
     <br>
+    <!-- LSTM 결과 -->
 
+    <!-- Trading BOt 실행 버튼 -->
+    <div id="example-2" style="height: 100px;">
+      <button @click="show = !show">
+        고급옵션
+      </button>
+      <form id="dqn" action="/predict/DQN" method="POST" enctype="multipart/form-data">
+        <div class="trading_bot_start"
+          style=" text-align:center; width: 60%;margin-top: 3rem; margin-left: 20%; margin-right: 20%;">
+          <button>
+            <input style="background: #004fff; border: none;" type="submit" value="Start Trading"></input>
+          </button>
+        </div>
+        <transition name="slide-fade">
+          <fieldset style="width:fit-content" v-if="show">
+            <legend>DQN Options</legend>
+            Initial Money :
+            <input type="number" min="0" max="10000000" step="10000" name="INITIAL_MONEY" value="1000000">
+            Episode :
+            <input type="range" min="5" max="1000" step="10" name="EPISODE">
+            Batch_size :
+            <input type="radio" name="BATCHSIZE" value="32">32
+            <input type="radio" name="BATCHSIZE" value="64">64
+            <input type="radio" name="BATCHSIZE" value="128">128
+            MODE :
+            <input type="text" name="DQN_MODE" list="mode">
+            <datalist id="mode">
+              <option value="train">Train</option>
+              <option value="test">Test</option>
+            </datalist>
+          </fieldset>
+        </transition>
+      </form>
+    </div>
 
-    <form id="dqn" action="/predict/DQN" method="POST" enctype="multipart/form-data">
-      <div class="trading_bot_start"
-        style=" text-align:center; width: 60%;margin-top: 3rem; margin-left: 20%; margin-right: 20%;">
-        <button>
-          <input style="background: #004fff; border: none;" type="submit" value="Start Trading"></input>
-        </button>
-      </div>
-    </form>
-    <!-- LSTM 결과 및 Trading BOt 실행 버튼 -->
+    <script src="../temp.js"></script>
+    <!-- Trading BOt 실행 버튼 -->
 
     <!-- Trading 결과 -->
-    <div style="margin-top: 3rem; margin-left: 20%; margin-right: 20%;">
+    <div style="margin-top: 5%; margin-left: 20%; margin-right: 20%;">
       <table class="table table-hover" v-if=1>
         <thead>
           <tr>

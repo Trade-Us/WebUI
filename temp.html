@@ -1,0 +1,70 @@
+<html>
+
+<head>
+    <title>input 테스트 페이지</title>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+<body>
+    <div id="example-1">
+        <button @click="show = !show">
+            Toggle render
+        </button>
+        <form>
+            <transition name="slide-fade">
+                <fieldset style="width:fit-content" v-if="show">
+                    <legend>LSTM Options</legend>
+                    Epoch :
+                    <input type="range" min="5" max="1000" step="10" name="EPOCH">
+                    Batch_size :
+                    <input type="radio" name="BATCHSIZE" value="32">32
+                    <input type="radio" name="BATCHSIZE" value="64">64
+                    <input type="radio" name="BATCHSIZE" value="128">128
+                    Window :
+                    <input type="number" min="0" max="100" step="10" name="WINDOW" value="100">
+                    Predict Period :
+                    <input type="number" min="10" max="20" step="1" name="PREDICT_PERIOD" value="10">
+                </fieldset>
+            </transition>
+        </form>
+    </div>
+    <fieldset style="width:fit-content">
+        <legend>DQN Options</legend>
+        Initial Money :
+        <input type="number" min="0" max="10000000" step="10000" name="INITIAL_MONEY" value="1000000">
+        Episode :
+        <input type="range" min="5" max="1000" step="10" name="EPISODE">
+        Batch_size :
+        <input type="radio" name="BATCHSIZE" value="32">32
+        <input type="radio" name="BATCHSIZE" value="64">64
+        <input type="radio" name="BATCHSIZE" value="128">128
+        MODE :
+        <input type="text" name="DQN_MODE" list="mode">
+        <datalist id="mode">
+            <option value="train">Train</option>
+            <option value="test">Test</option>
+        </datalist>
+    </fieldset>
+    <div id="demo">
+        <button v-on:click="show = !show">
+            Toggle
+        </button>
+        <transition name="fade">
+            <p v-if="show">hello</p>
+        </transition>
+    </div>
+    <!--
+    <div id="example-12">
+        <button @click="show = !show">
+            Toggle render
+        </button>
+        <transition name="slide-fade">
+            <p v-if="show">hello</p>
+        </transition>
+    </div>
+-->
+</body>
+<script src="temp.js"></script>
+<link rel="stylesheet" href="temp.css" />
+
+</html>
