@@ -188,7 +188,7 @@ def run_DQN():
     while step < len(portfol_val[index][0]) :
         action = portfol_val[index][0][step] 
         step += 1
-        if step == 10: break
+        if step == predict_period: break
         if action == 0:
             action = "Sell"
             if stock_num > 0:
