@@ -64,7 +64,7 @@ header {
 }
 
 /*버튼*/
-button{
+#start_trading_bot{
     width:150px;
     height:50px;
     color: #fff;
@@ -78,8 +78,35 @@ button{
     left:50px;
     right:50px;
 }
-button:hover{
+#start_trading_bot:hover{
     background: rgba(0,79,225,0.9);
     cursor:pointer;
     box-shadow: 0 2px 4px rgba(0,79,255,0.6);
+}
+
+/* transition option */
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .3s ease;
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateY(-20px);
+  opacity: 0;
+}
+
+.input-train-file{
+    background: lightgray;
+    border-radius: 10px;
+    left: 50%;
+    margin-right:20%;
+    margin-left: 20%;
+    margin-top: 10px;
+}
+#advanced-option {
+    background-color: white;
+    border: thin;
+    color: blue;
 }
