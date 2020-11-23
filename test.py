@@ -57,6 +57,16 @@ def run_DQN():
     # help='either "train" or "test"')
     #parser.add_argument('-w', '--weights', type=str, help='a trained model weights')
     #args = parser.parse_args()
+    
+    '''
+    mode = request.args.get('DQN_MODE')
+    initial_invest = request.args.get('INITIAL_MONEY')
+    initial_invest = int(initial_invest)
+    episode = request.form["EPISODE"]
+    episode = int(episode)
+    batch_size = request.form["DQN_BATCHSIZE"]
+    batch_size = int(batch_size)
+    '''
     mode = 'train'
     initial_invest = 2000000
     episode = 10
@@ -94,9 +104,9 @@ def run_DQN():
         # remake the env with test data
         env = TradingEnv(test_data, initial_invest)
         # load trained weights
-        agent.load(args.weights)
+        agent.load('weights/last_weights.h5')
         # when test, the timestamp is same as time when weights was trained
-        timestamp = re.findall(r'\d{6}', args.weights)[0]
+        #timestamp = re.findall(r'\d{6}', args.weights)[0]
 
     for e in range(episode):
         state = env.reset()
@@ -126,7 +136,7 @@ def run_DQN():
                 print(" ", end="")
                 print("episode: {}/{}, episode end value: {}".format(
                     e + 1, episode, info['cur_val']))
-
+                agent.save('weights/last_weights.h5')
                 # append episode end portfolio value
                 portfolio_value.append([actions, info['cur_val']])
                 break
@@ -146,9 +156,11 @@ def run_DQN():
                 agent.deprecate_epsilon
 
         # Save Weights
+        '''
         if mode == 'train' and (e + 1) % 10 == 0:  # checkpoint weights
             agent.save(
                 'weights/{}-b{}-e{}.h5'.format(timestamp, batch_size, episode))
+        '''
 
     # save portfolio value history to disk
     with open('portfolio_val/{}-b{}-e{}-{}.p'.format(timestamp, batch_size, episode, mode), 'wb') as fp:
@@ -216,11 +228,31 @@ def run_DQN():
 def make_prediction():
     if request.method == 'POST':
         # 업로드 파일 처리 분기
+        #is_advanced?
+        #epoch
+        #window
+        #batch_size
+        '''
+        window_size = request.args.get('WINDOW')
+        window_size = int(window_size)
+        predict_period = request.args.get('PREDICT_PERIOD')
+        predict_period = int(predict_period)
+        lstm_epoch = request.form["EPOCH"]
+        lstm_epoch = int(lstm_epoch)
+        lstm_batchsize = request.form["BATCHSIZE"]
+        lstm_batchsize = int(lstm_batchsize)
+        '''
+
         file = request.files["trainFile"]
         if not file:
             return render_template('index.html', labe="No Files")
         file.save("./data/"+file.filename)
         data = pd.read_csv('./data/'+file.filename)  # csv파일 로드
+
+        lstm_epoch = 3
+        lstm_batchsize = 10
+        window_size = 100
+        predict_period = 10
 
         high_prices = data['High'].values
         low_prices = data['Low'].values
@@ -229,8 +261,8 @@ def make_prediction():
         # 정규화를 위한 코드 추가
         max_price = max(mid_prices)
         min_price = min(mid_prices)
-
-        seq_len = 100  # 며칠간의 데이터를 보고 내일것을 예측할거냐
+        
+        seq_len = window_size  # 며칠간의 데이터를 보고 내일것을 예측할거냐
         sequence_length = seq_len + 1  # 50개를 보고 1개를 예측 //51개 데이터를 한 window로 만듦
 
         # Windowing
@@ -256,25 +288,36 @@ def make_prediction():
         y_train = train[:, -1]  # 나머지 1일 예측
 
         x_test = result[row:, :-1]
-        x_predict = result[row:,-100:]
+        x_predict = result[row:,window_size*-1:]
         x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
         y_test = result[row:, -1]
 
-        model.summary()
-        model.fit(x_train, y_train, validation_data=(x_test, y_test),
-batch_size=10, #한번에 10개씩 묶어서 학습시킨다
-    epochs=5) #20번 반복
+       
+        model = Sequential()  # 모델을 순차적으로 정의하는 클래스
 
-        x_test_= result[:, -100:]
+        model.add(LSTM(window_size, return_sequences=True, input_shape=(window_size, 1)))
+
+        model.add(LSTM(64, return_sequences=False))
+    #           ------ 조정하면 서 성능테스트
+        model.add(Dense(1, activation='linear'))
+    #              ---output 개수: 다음날 하루의 output
+        model.compile(loss='mse', optimizer='rmsprop')
+        #model.load_weights('lstmweights/202011072326-lstm.h5')
+        #model.save_weights(name)
+
+        model.summary()
+        model.fit(x_train, y_train, validation_data=(x_test, y_test), batch_size=lstm_batchsize, epochs=lstm_epoch) 
+
+        x_test_= result[:, window_size*-1:]
         x_test_ = np.reshape(x_test_, (x_test_.shape[0], x_test_.shape[1], 1))
         #new
         origin_seq_in = np.array(x_test_)
         seq_in = origin_seq_in[-1]
         seq_out = seq_in
-        pred = np.zeros((10,1))
-        for i in range(0,10):
+        pred = np.zeros((predict_period,1))
+        for i in range(0,predict_period):
             sample_in = np.array(seq_in)
-            sample_in = np.reshape(sample_in,(1,100,1))
+            sample_in = np.reshape(sample_in,(1,window_size,1))
             pred_out = model.predict(sample_in)
            
             seq_in = np.append(seq_in,pred_out,axis=0)
@@ -292,7 +335,7 @@ batch_size=10, #한번에 10개씩 묶어서 학습시킨다
         # 숫자가 10일 경우 0으로 처리
         #if label == '10': label = '0'
         public_label.clear()
-        for i in range(1, 11):
+        for i in range(1, predict_period + 1):
 
             public_label.append(float(counter_normalize[i, 0]))
         # 결과 리턴
@@ -300,19 +343,7 @@ batch_size=10, #한번에 10개씩 묶어서 학습시킨다
 
 
 if __name__ == '__main__':
-    # 모델 로드
-    # ml/model.py 선 실행 후 생성
-    model = Sequential()  # 모델을 순차적으로 정의하는 클래스
-
-    model.add(LSTM(100, return_sequences=True, input_shape=(100, 1)))
-
-    model.add(LSTM(64, return_sequences=False))
- #           ------ 조정하면 서 성능테스트
-    model.add(Dense(1, activation='linear'))
-#              ---output 개수: 다음날 하루의 output
-    model.compile(loss='mse', optimizer='rmsprop')
-    #model.load_weights('lstmweights/202011072326-lstm.h5')
-
+    
     public_label = []
     # Flask 서비스 스타트
     app.run(host='127.0.0.1', port=8000, debug=True)
