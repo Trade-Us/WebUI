@@ -59,18 +59,11 @@ def run_DQN():
     #args = parser.parse_args()
     
     '''
-    mode = request.args.get('DQN_MODE')
-    initial_invest = request.args.get('INITIAL_MONEY')
-    initial_invest = int(initial_invest)
-    episode = request.form["EPISODE"]
-    episode = int(episode)
-    batch_size = request.form["DQN_BATCHSIZE"]
-    batch_size = int(batch_size)
-    '''
     mode = 'train'
     initial_invest = 2000000
     episode = 10
     batch_size = 64
+    '''
     weights = 'path of weights file'
     maybe_make_dir('weights')
     maybe_make_dir('portfolio_val')
@@ -232,16 +225,8 @@ def make_prediction():
         #epoch
         #window
         #batch_size
-        '''
-        window_size = request.args.get('WINDOW')
-        window_size = int(window_size)
-        predict_period = request.args.get('PREDICT_PERIOD')
-        predict_period = int(predict_period)
-        lstm_epoch = request.form["EPOCH"]
-        lstm_epoch = int(lstm_epoch)
-        lstm_batchsize = request.form["BATCHSIZE"]
-        lstm_batchsize = int(lstm_batchsize)
-        '''
+        
+        
 
         file = request.files["trainFile"]
         if not file:
@@ -249,11 +234,12 @@ def make_prediction():
         file.save("./data/"+file.filename)
         data = pd.read_csv('./data/'+file.filename)  # csv파일 로드
 
+        '''
         lstm_epoch = 3
         lstm_batchsize = 10
         window_size = 100
         predict_period = 10
-
+        '''
         high_prices = data['High'].values
         low_prices = data['Low'].values
         mid_prices = (high_prices + low_prices) / 2  # midprice로 예측
@@ -341,9 +327,46 @@ def make_prediction():
         # 결과 리턴
         return render_template('index.html', labe=public_label)
 
+@app.route("/lstmOptions", methods=["GET"])
+def getLSTMOptions():
+    global lstm_epoch, window_size, predict_period, lstm_batchsize
+    lstm_epoch = request.args.get('EPOCH')
+    lstm_epoch = int(lstm_epoch)
+    window_size = request.args.get('WINDOW')
+    window_size = int(window_size)
+    predict_period = request.args.get('PREDICT_PERIOD')
+    predict_period = int(predict_period)
+    lstm_batchsize = request.args.get("BATCHSIZE")
+    lstm_batchsize = int(lstm_batchsize)
+
+    return render_template('index.html')
+@app.route("/dqnOptions", methods=["GET"])
+def getDQNOptions():
+    global mode, initial_invest, episode, batch_size
+    mode = request.args.get('DQN_MODE')
+    initial_invest = request.args.get('INITIAL_MONEY')
+    initial_invest = int(initial_invest)
+    episode = request.args.get("EPISODE")
+    episode = int(episode)
+    batch_size = request.args.get("DQN_BATCHSIZE")
+    batch_size = int(batch_size)
+    return render_template('index.html')
 
 if __name__ == '__main__':
     
     public_label = []
+
+    # LSTM option
+    lstm_epoch = 3
+    lstm_batchsize = 10
+    window_size = 100
+    predict_period = 10
+
+    # DQN option
+    mode = 'train'
+    initial_invest = 2000000
+    episode = 10
+    batch_size = 64
+
     # Flask 서비스 스타트
     app.run(host='127.0.0.1', port=8000, debug=True)
