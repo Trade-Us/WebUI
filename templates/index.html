@@ -12,8 +12,7 @@
   <link rel="stylesheet" type="text/css" href="(( url_for('static', filename = 'index_test.css') ))">
 
   <!-- Import Vue.js -->
-  <script src="https://unpkg.com/vue@3.0.0-beta.12/dist/vue.global.js"></script>
-  <!--<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>-->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 
 </head>
@@ -47,10 +46,12 @@
 
     <!-- 파일 첨부란 작성 -->
     <br><br><br>
-    <div id="example-1" style="height: 100px;">
-      <button @click="show = !show">
-        고급옵션
-      </button>
+    <div id="lstm-option" style="height: 100px;">
+      <div style="width: 100%; text-align: center;">
+        <button @click="show = !show" id="advanced-option">
+          고급옵션
+        </button>
+      </div>
       <div class="input-train-file">
         <form action="/predict" method="POST" enctype="multipart/form-data">
           <label for="trainFile" style="margin:10px">훈련데이터 파일을 업로드 해주세요 (.csv)</label></br>
@@ -76,7 +77,6 @@
         </form>
       </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <link rel="stylesheet" href="../temp.css" />
     <!-- 파일 첨부란 작성 -->
 
@@ -147,40 +147,37 @@
     <!-- LSTM 결과 -->
 
     <!-- Trading BOt 실행 버튼 -->
-    <div id="example-2" style="height: 100px;">
-      <button @click="show = !show">
-        고급옵션
-      </button>
-      <form id="dqn" action="/predict/DQN" method="POST" enctype="multipart/form-data">
-        <div class="trading_bot_start"
-          style=" text-align:center; width: 60%;margin-top: 3rem; margin-left: 20%; margin-right: 20%;">
-          <button>
-            <input style="background: #004fff; border: none;" type="submit" value="Start Trading"></input>
-          </button>
-        </div>
-        <transition name="slide-fade">
-          <fieldset style="width:fit-content" v-if="show">
-            <legend>DQN Options</legend>
-            Initial Money :
-            <input type="number" min="0" max="10000000" step="10000" name="INITIAL_MONEY" value="1000000">
-            Episode :
-            <input type="range" min="5" max="1000" step="10" name="EPISODE">
-            Batch_size :
-            <input type="radio" name="BATCHSIZE" value="32">32
-            <input type="radio" name="BATCHSIZE" value="64">64
-            <input type="radio" name="BATCHSIZE" value="128">128
-            MODE :
-            <input type="text" name="DQN_MODE" list="mode">
-            <datalist id="mode">
-              <option value="train">Train</option>
-              <option value="test">Test</option>
-            </datalist>
-          </fieldset>
-        </transition>
-      </form>
-    </div>
+    <div id="dqn-option" style="height: 100px; ">
+      <div class="trading_bot_start" style=" text-align:center; height: fit-content; align-content: center;">
+        <button @click="show = !show" id="advanced-option">
+          고급옵션
+        </button>
+        <form id="dqn" action="/predict/DQN" method="POST" enctype="multipart/form-data">
 
-    <script src="../temp.js"></script>
+          <input id="start_trading_bot" type="submit" value="Start Trading"></input>
+
+          <transition name="slide-fade">
+            <fieldset style=" align-items: center;" v-if="show">
+              <legend>DQN Options</legend>
+              Initial Money :
+              <input type="number" min="0" max="10000000" step="10000" name="INITIAL_MONEY" value="1000000">
+              Episode :
+              <input type="range" min="5" max="1000" step="1" name="EPISODE">
+              Batch_size :
+              <input type="radio" name="BATCHSIZE" value="32">32
+              <input type="radio" name="BATCHSIZE" value="64">64
+              <input type="radio" name="BATCHSIZE" value="128">128
+              MODE :
+              <input type="text" name="DQN_MODE" list="mode">
+              <datalist id="mode">
+                <option value="train">Train</option>
+                <option value="test">Test</option>
+              </datalist>
+            </fieldset>
+          </transition>
+        </form>
+      </div>
+    </div>
     <!-- Trading BOt 실행 버튼 -->
 
     <!-- Trading 결과 -->
@@ -213,6 +210,22 @@
     <br><br><br><br>
     <!-- Trading 결과 -->
   </div>
+
+  <script>
+    new Vue({
+      el: '#lstm-option',
+      data: {
+        show: false
+      }
+    })
+    new Vue({
+      el: '#dqn-option',
+      data: {
+        show: false
+      }
+    })
+  </script>
 </body>
+
 
 </html>
