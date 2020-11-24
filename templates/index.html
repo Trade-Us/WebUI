@@ -109,29 +109,26 @@
     <!-- LSTM 결과 -->
 
     <br><br><br>
-    {%if labe%}
+    (% if labe %)
     <div class="chart-container" style="width: 60%;margin-top: 5%; margin-left: 20%; margin-right: 20%;">
       <canvas id="myChart"></canvas>
       <script>
-        var ctx = document.getElementById('myChart');
+        var ctx = document.getElementById('myChart');      
+        var labels = [];
+        var datas = [(( labe | join(', ')))];
+        console.log(datas);
+        for(var i = 0; i < ((labe|count)); i++){
+          labels.push(String(i+1));
+        }
+        var label = ((labe|count)) + "일 예측 결과";
+
         var myChart = new Chart(ctx, {
           type: 'line',
           data: {
-            labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+            labels: labels,
             datasets: [{
-              label: '10일 예측 결과',
-              data: [
-                ((labe[0])),
-                ((labe[1])),
-                ((labe[2])),
-                ((labe[3])),
-                ((labe[4])),
-                ((labe[5])),
-                ((labe[6])),
-                ((labe[7])),
-                ((labe[8])),
-                ((labe[9]))
-              ],
+              label: label,
+              data: datas,
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -168,7 +165,7 @@
         });
       </script>
     </div>
-    {%endif%}
+    (%endif%)
     <br>
     <!-- LSTM 결과 -->
 
@@ -221,7 +218,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for result in dqnResult%}
+          (% for result in dqnResult%)
           <tr>
             <th scope="row"> ((loop.index)) </th>
             <td> (( result[0] )) </td>
@@ -229,7 +226,7 @@
             <td> (( result[2] )) </td>
             <td> (( result[3] )) </td>
           </tr>
-          {% endfor %}
+          (% endfor %)
 
         </tbody>
       </table>
