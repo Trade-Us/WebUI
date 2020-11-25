@@ -28,6 +28,8 @@ app = Flask(__name__)
 # jinja 연동하기 위한 Bracket 설정 (jQuery)
 jinja_options = app.jinja_options.copy()
 jinja_options.update(dict(
+    block_start_string='(%',
+    block_end_string='%)',
     variable_start_string='((',
     variable_end_string='))'
 ))
