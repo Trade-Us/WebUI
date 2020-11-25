@@ -71,10 +71,10 @@
     <!-- 파일 다운로드 -->
     <!-- 파일 첨부란 작성 -->
     <div class="input-train-file">
-      <form action="/predict" method="POST" enctype="multipart/form-data">
+      <form action="/predict" method="POST" enctype="multipart/form-data" id="loadinga">
         <label for="trainFile" style="margin:10px">훈련데이터 파일을 업로드 해주세요 (.csv)</label></br>
-        <input style="margin: 10px; " type="file" id="trainFile" name="trainFile" accept=".csv">
-        <input type="submit" style="float: right; margin:10px; width: 100px" value="훈련 시작">
+        <input style="margin: 10px; " type="file" id="trainFile" name="trainFile" accept=".csv" required>
+        <input type="submit" style="float: right; margin:10px; width: 100px" value="훈련 시작" id="sub">
       </form>
     </div>
     <div id="lstm-option" style="height: 100px;">
@@ -89,7 +89,8 @@
             <div style="width:fit-content" v-if="show">
               <legend>LSTM Options</legend>
               Epoch :
-              <input type="range" min="5" max="1000" step="10" name="EPOCH" value="500">
+              <input type="text" value=""id="epoch"/>
+              <input type="range" min="5" max="1000" step="10" name="EPOCH" value="500" onchange="updateTextInput(this.value)">
               Batch_size :
               <input type="radio" name="BATCHSIZE" value="32" checked>32
               <input type="radio" name="BATCHSIZE" value="64">64
@@ -249,6 +250,19 @@
         show: false
       }
     })
+  </script>
+  <script type="text/javascript">
+    var loading = document.getElementById("loading")
+        loading.addEventListener('click', function(){
+            // 파일 없음은 해결 됨 커스텀 하려면 코드 작성
+            event.preventDefault();
+            alert("hello world!");
+            
+            loading.submit();
+        });
+    function updateTextInput(val){
+      document.getElementById("epoch").value = val;
+    }
   </script>
 </body>
 
