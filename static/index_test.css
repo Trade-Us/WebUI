@@ -1,6 +1,7 @@
 @charset "utf-8";
 @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gugi&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Black+Han+Sans&family=Gugi&display=swap');
+
 /* 리셋  */
 * { margin: 0; padding: 0; }
 li { list-style: none; }
@@ -8,14 +9,15 @@ a { color: inherit; text-decoration: none; }
 
 /* 레이아웃 */
 body {
-    font-family: 'Nanum Gothic', sans-serif;
+    background-color: cadetblue;
+    font-family: 'Noto Serif KR', serif;
     font-size: 16px;
     color: #333;
     line-height: 1.25;
 }
 
 header {
-    font-family: 'Black Han Sans', sans-serif;
+    font-family: 'Gugi', cursive;
     width: 100%;
     height: 150px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -98,7 +100,6 @@ header {
 }
 
 .input-train-file{
-    background: lightgray;
     border-radius: 10px;
     left: 50%;
     margin-right:20%;
