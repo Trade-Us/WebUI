@@ -8,7 +8,6 @@
     integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
   <title>주식 가격예측 Trading Bot</title>
   <!-- Import Styles -->
-  <link rel="stylesheet" href="./assets/styles.css" />
   <link rel="stylesheet" type="text/css" href="(( url_for('static', filename = 'index_test.css') ))">
 
   <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gugi&family=Noto+Serif+KR:wght@900&display=swap" rel="stylesheet">
@@ -60,7 +59,7 @@
       <div class="inner container center-area" style="height: fit-content; display:inline-block; background:lightgray; border-radius: 10px; margin: 10px; padding: 10px;width:600px; height: fit-content;">
       <form action="/predict" method="POST" enctype="multipart/form-data">
         <label for="trainFile">훈련데이터 파일을 업로드 해주세요 (.csv)</label></br>
-        <input type="file" id="trainFile" name="trainFile" accept=".csv">
+        <input type="file" id="trainFile" name="trainFile" accept=".csv" required>
         <input type="submit" style="float: right; width: 100px" value="훈련 시작">
       </form>
       <div id="lstm-option" style="height: 100px;">
@@ -171,7 +170,7 @@
         });
       </script>
     </div>
-    (%endif%)
+    
     <br>
     <!-- LSTM 결과 -->
 
@@ -210,9 +209,11 @@
 
       </div>
     </div>
+    (%endif%)
     <!-- Trading BOt 실행 버튼 -->
 
     <!-- Trading 결과 -->
+    (%if dqnResult%)
     <div style="margin-top: 5%; margin-left: 20%; margin-right: 20%;">
       <table class="table table-hover" v-if=1>
         <thead>
@@ -238,6 +239,7 @@
         </tbody>
       </table>
     </div>
+    (%endif%)
 
     <br><br><br><br>
     <!-- Trading 결과 -->
@@ -258,14 +260,14 @@
     })
   </script>
   <script type="text/javascript">
-    var loading = document.getElementById("loading")
-        loading.addEventListener('click', function(){
-            // 파일 없음은 해결 됨 커스텀 하려면 코드 작성
-            event.preventDefault();
-            alert("hello world!");
+    // var loading = document.getElementById("loading")
+    //     loading.addEventListener('click', function(){
+    //         // 파일 없음은 해결 됨 커스텀 하려면 코드 작성
+    //         event.preventDefault();
+    //         alert("hello world!");
             
-            loading.submit();
-        });
+    //         loading.submit();
+    //     });
     function updateTextInput(val){
       document.getElementById("epoch").value = val;
     }
