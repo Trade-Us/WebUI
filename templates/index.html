@@ -100,7 +100,6 @@
         </div>
     </div>
     <!-- 파일 다운로드 -->
-
     <!-- LSTM 결과 -->
 
     <br><br><br>
@@ -186,6 +185,7 @@
   </div>
 
   <script type="text/javascript">
+    // -- 고급 옵션 --
     new Vue({
       el: '#lstm-option',
       data: {
@@ -212,7 +212,8 @@
       if(type=="episode")
         document.getElementById("episode").value = message;
     }
-  
+    // -- 고급 옵션 --
+    // -- LSTM 결과 그래프 --
     var ctx = document.getElementById('myChart');      
     var labels = [];
     var datas = [(( labe | join(', ')))];
@@ -263,6 +264,9 @@
         }
       }
     });
+    // -- LSTM 결과 그래프 --
+    // -- 로딩 화면 --
+    // -- 로딩 화면 --
   </script>
 </body>
 
