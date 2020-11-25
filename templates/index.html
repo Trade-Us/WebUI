@@ -8,7 +8,6 @@
     integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
   <title>주식 가격예측 Trading Bot</title>
   <!-- Import Styles -->
-  <link rel="stylesheet" href="./assets/styles.css" />
   <link rel="stylesheet" type="text/css" href="(( url_for('static', filename = 'index_test.css') ))">
 
 
@@ -58,7 +57,7 @@
       <div class="inner container center-area" style="height: fit-content; display:inline-block; background:lightgray; border-radius: 10px; margin: 10px; padding: 10px;width:600px; height: fit-content;">
       <form action="/predict" method="POST" enctype="multipart/form-data">
         <label for="trainFile">훈련데이터 파일을 업로드 해주세요 (.csv)</label><br><br>
-        <input type="file" id="trainFile" name="trainFile" accept=".csv">
+        <input type="file" id="trainFile" name="trainFile" accept=".csv" required>
         <input type="submit" style="float: right; width: 100px" value="훈련 시작">
       </form>
       <div id="lstm-option" style="height:fit-content;">
@@ -71,15 +70,17 @@
         <form action="/lstmOptions" method="GET" style="height:fit-content;">
           <transition name="slide-fade">
             <div v-if="show">
-              Epoch :
-              <input type="range" min="5" max="1000" step="10" name="EPOCH" value="500"><br>
-              Batch_size :
+              학습강도 :
+              <input type="range" min="5" max="1000" step="10" name="EPOCH" value="500" onchange="updateTextInput(this.value, 'epoch')">
+              <input type="text" value="기본값" id="epoch" style=" background-color: lightgrey; border: none; font-size: small;" disabled>
+              <br>
+              학습할 양 :
               <input type="radio" name="BATCHSIZE" value="32" checked>32
               <input type="radio" name="BATCHSIZE" value="64">64
               <input type="radio" name="BATCHSIZE" value="128">128<br>
-              Window :
+              반영할 데이터 크기 :
               <input type="number" min="0" max="100" step="10" name="WINDOW" value="100"><br>
-              Predict Period :
+              예측할 일 수 :
               <input type="number" min="10" max="20" step="1" name="PREDICT_PERIOD" value="10">
               <input type="submit" style="float: right;" value="변수 설정">
             </div>
@@ -99,67 +100,14 @@
         </div>
     </div>
     <!-- 파일 다운로드 -->
-
     <!-- LSTM 결과 -->
 
     <br><br><br>
     (% if labe %)
     <div class="chart-container" style="width: 60%;margin-top: 5%; margin-left: 20%; margin-right: 20%;">
       <canvas id="myChart"></canvas>
-      <script>
-        var ctx = document.getElementById('myChart');      
-        var labels = [];
-        var datas = [(( labe | join(', ')))];
-        console.log(datas);
-        for(var i = 0; i < ((labe|count)); i++){
-          labels.push(String(i+1));
-        }
-        var label = ((labe|count)) + "일 예측 결과";
-
-        var myChart = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: label,
-              data: datas,
-              backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-              ],
-              borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)',
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)'
-              ],
-              borderWidth: 1
-            }]
-          },
-          options: {
-            scales: {
-              yAxes: [{
-                ticks: {
-                  beginAtZero: false
-                }
-              }]
-            }
-          }
-        });
-      </script>
     </div>
-    (%endif%)
+    
     <br>
     <!-- LSTM 결과 -->
 
@@ -179,7 +127,9 @@
               Initial Money :
               <input type="number" min="0" max="10000000" step="10000" name="INITIAL_MONEY" value="1000000"><br>
               Episode :
-              <input type="range" min="5" max="1000" step="1" name="EPISODE" value="500"><br>
+              <input type="range" min="5" max="1000" step="1" name="EPISODE" value="500" onchange="updateTextInput(this.value, 'episode')">
+              <input type="text" value="기본값" id="episode" style="  border: none; font-size: small;" disabled>
+              <br>
               Batch_size :
               <input type="radio" name="DQN_BATCHSIZE" value="32" checked>32
               <input type="radio" name="DQN_BATCHSIZE" value="64">64
@@ -198,9 +148,11 @@
 
       </div>
     </div>
+    (%endif%)
     <!-- Trading BOt 실행 버튼 -->
 
     <!-- Trading 결과 -->
+    (%if dqnResult%)
     <div style="margin-top: 5%; margin-left: 20%; margin-right: 20%;">
       <table class="table table-hover" v-if=1>
         <thead>
@@ -226,12 +178,14 @@
         </tbody>
       </table>
     </div>
+    (%endif%)
 
     <br><br><br><br>
     <!-- Trading 결과 -->
   </div>
 
-  <script>
+  <script type="text/javascript">
+    // -- 고급 옵션 --
     new Vue({
       el: '#lstm-option',
       data: {
@@ -244,6 +198,75 @@
         show: false
       }
     })
+    function updateTextInput(val, type){
+      var message;
+      if(val < 300)
+        message = "약함 - 부족할 수 있음";
+      else if(val >= 300 && val < 700)
+        message = "중간 - 적절함";
+      else
+        message = "강함 - 오버핏 가능성"
+      
+      if(type=="epoch")
+        document.getElementById("epoch").value = message;
+      if(type=="episode")
+        document.getElementById("episode").value = message;
+    }
+    // -- 고급 옵션 --
+    // -- LSTM 결과 그래프 --
+    var ctx = document.getElementById('myChart');      
+    var labels = [];
+    var datas = [(( labe | join(', ')))];
+    console.log(datas);
+    for(var i = 0; i < ((labe|count)); i++){
+      labels.push(String(i+1));
+    }
+    var label = ((labe|count)) + "일 예측 결과";
+
+    var myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: label,
+          data: datas,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: false
+            }
+          }]
+        }
+      }
+    });
+    // -- LSTM 결과 그래프 --
+    // -- 로딩 화면 --
+    // -- 로딩 화면 --
   </script>
 </body>
 
