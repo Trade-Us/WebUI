@@ -184,7 +184,7 @@ def run_DQN():
     step = 0
     stock_num = 0
     exchange = initial_invest
-    dqnresult = []
+    dqnresult.clear()
     date = (today + dt.timedelta(days=step+1)).strftime("%Y-%m-%d")
     dqnresult.append([date, "", initial_invest, 0.0])
     while step < len(portfol_val[index][0]) :
@@ -331,7 +331,7 @@ def make_prediction():
 
 @app.route("/lstmOptions", methods=["GET"])
 def getLSTMOptions():
-    global lstm_epoch, window_size, predict_period, lstm_batchsize
+    global lstm_epoch, window_size, predict_period, lstm_batchsize, public_label, dqnresult
     lstm_epoch = request.args.get('EPOCH')
     lstm_epoch = int(lstm_epoch)
     window_size = request.args.get('WINDOW')
@@ -341,10 +341,15 @@ def getLSTMOptions():
     lstm_batchsize = request.args.get("BATCHSIZE")
     lstm_batchsize = int(lstm_batchsize)
 
+    if public_label and dqnresult:
+        return render_template('index.html', labe=public_label, dqnResult=dqnresult)
+    elif len(public_label) > 0:
+        return render_template('index.html', labe=public_label)
     return render_template('index.html')
+
 @app.route("/dqnOptions", methods=["GET"])
 def getDQNOptions():
-    global mode, initial_invest, episode, batch_size
+    global mode, initial_invest, episode, batch_size, public_label, dqnresult
     mode = request.args.get('DQN_MODE')
     initial_invest = request.args.get('INITIAL_MONEY')
     initial_invest = int(initial_invest)
@@ -352,12 +357,17 @@ def getDQNOptions():
     episode = int(episode)
     batch_size = request.args.get("DQN_BATCHSIZE")
     batch_size = int(batch_size)
+    
+    if public_label and dqnresult:
+        return render_template('index.html', labe=public_label, dqnResult=dqnresult)
+    elif public_label:
+        return render_template('index.html', labe=public_label)
     return render_template('index.html')
 
 if __name__ == '__main__':
     
     public_label = []
-
+    dqnresult = []
     # LSTM option
     lstm_epoch = 3
     lstm_batchsize = 10
