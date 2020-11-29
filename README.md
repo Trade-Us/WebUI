@@ -4,3 +4,7 @@
 
 **resource**
 .css  파일 작성하기
+
+
+## 서비스 소개
+![Trade Us Introduction](Panel_TradeUs.jpg)

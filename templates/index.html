@@ -38,7 +38,7 @@
       <header style="font-family: 'Nanum Gothic Coding', monospace; ">
         <br>
         <div class="innerHeader">
-          <h1 class="logo"><a href="#">DQN을 활용한 가격 예측</a></h1>
+          <h1 class="logo"><a href="http://127.0.0.1:8000/">DQN을 활용한 가격 예측</a></h1>
         </div>
 
         <br><br><br><br>
@@ -49,7 +49,7 @@
 
     </div>
     <!-- Title 및 프로젝트 설명 -->
-    <div style="background-color: white;">
+    <div style="background-color: white; ">
 
     <!-- 파일 다운로드 -->
     <br><br><br>
@@ -59,7 +59,7 @@
       <form action="/predict" method="POST" enctype="multipart/form-data">
         <label for="trainFile">훈련데이터 파일을 업로드 해주세요 (.csv)</label><br><br>
         <input type="file" id="trainFile" name="trainFile" accept=".csv" required>
-        <input type="submit" style="float: right; width: 100px" value="훈련 시작">
+        <input type="submit" style="float: right; width: 100px" value="훈련 시작" onclick="LoadingWithMask()">
       </form>
       <div id="lstm-option" style="height:fit-content;">
         <div style="width: 100%; text-align: left;">
@@ -72,7 +72,7 @@
           <transition name="slide-fade">
             <div v-if="show">
               학습강도 :
-              <input type="range" min="5" max="1000" step="10" name="EPOCH" value="500" onchange="updateTextInput(this.value, 'epoch')">
+              <input type="range" min="5" max="800" step="10" name="EPOCH" value="400" onchange="updateTextInput(this.value, 'epoch')">
               <input type="text" value="기본값" id="epoch" style=" background-color: lightgrey; border: none; font-size: small;" disabled>
               <br>
               학습할 양 :
@@ -98,8 +98,9 @@
           <div style="vertical-align:middle;"><div style="display:inline-block">LG Household & Health Care Ltd. </div><div style="display: inline-block; float: right;"><button type="button"><a href="https://query1.finance.yahoo.com/v7/finance/download/051900.KS?period1=1574330610&period2=1605953010&interval=1d&events=history&includeAdjustedClose=true">Download</a></button></div></div><br>
           <div style="vertical-align:middle;"><div style="display:inline-block">NAVER Corporation </div><div style="display: inline-block; float: right;"><button type="button"><a href="https://query1.finance.yahoo.com/v7/finance/download/035420.KS?period1=1574330695&period2=1605953095&interval=1d&events=history&includeAdjustedClose=true">Download</a></button></div></div>
         </form>
-        </div>
+      </div>
     </div>
+    
     <!-- 파일 다운로드 -->
     <!-- LSTM 결과 -->
 
@@ -116,7 +117,7 @@
     <div id="dqn-option" style="height: 100px; ">
       <div class="trading_bot_start" style=" text-align:center; height: fit-content; align-content: center;">
         <form id="dqn" action="/predict/DQN" method="POST">
-          <input id="start_trading_bot" style="font-family: 'Nerko One', cursive;" type="submit" value="Start Trading"></input>
+          <input id="start_trading_bot" style="font-family: 'Nerko One', cursive;" type="submit" value="Start Trading" onclick="LoadingWithMask()"></input>
         </form>
         <div style="margin-left: 20%;">
         <button @click="show = !show" style="background-color:transparent; font-size: small; float: left;">
@@ -128,7 +129,7 @@
               Initial Money :
               <input type="number" min="0" max="10000000" step="10000" name="INITIAL_MONEY" value="1000000"><br>
               Episode :
-              <input type="range" min="5" max="1000" step="1" name="EPISODE" value="500" onchange="updateTextInput(this.value, 'episode')">
+              <input type="range" min="5" max="800" step="1" name="EPISODE" value="400" onchange="updateTextInput(this.value, 'episode')">
               <input type="text" value="기본값" id="episode" style="  border: none; font-size: small;" disabled>
               <br>
               Batch_size :
@@ -180,11 +181,12 @@
       </table>
     </div>
     (%endif%)
-
-    <br><br><br><br>
+    <div id="loadingImg" style=" height: fit-content; text-align: center; display: none;">
+      <img src="(( url_for('static', filename='image/LoadingImg.gif')))" style='height:150px; display: block; margin: 0px auto;'/>
+    </div>
     <!-- Trading 결과 -->
   </div>
-
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script type="text/javascript">
     // -- 고급 옵션 --
     new Vue({
@@ -201,15 +203,17 @@
     })
     function updateTextInput(val, type){
       var message;
+      var percent = val;
+      percent = Math.round(percent / 800 * 100);
       if(val < 300)
-        message = "약함 - 부족할 수 있음";
+        message = "약함";
       else if(val >= 300 && val < 700)
-        message = "중간 - 적절함";
+        message = "중간";
       else
-        message = "강함 - 오버핏 가능성"
-      
+        message = "강함"
+      message += " " + percent + "%"
       if(type=="epoch")
-        document.getElementById("epoch").value = message;
+        document.getElementById("epoch").value =  message;
       if(type=="episode")
         document.getElementById("episode").value = message;
     }
@@ -267,6 +271,46 @@
     });
     // -- LSTM 결과 그래프 --
     // -- 로딩 화면 --
+    function test(imageName) {
+        LoadingWithMask();
+        //setTimeout("closeLoadingWithMask()", 3000);
+    }
+
+    function LoadingWithMask() {
+      //화면의 높이와 너비를 구합니다.
+      var maskHeight = $(document).height();
+      var maskWidth  = $(document).width();
+      
+      //화면에 출력할 마스크를 설정해줍니다.
+      var mask       ="<div id='mask' style='position:absolute; z-index:9000; background-color:#000000; display:none; left:0; top:0;'></div>";
+      //var loadingImg ='';
+      
+      //loadingImg +=" <img src='" + gif + "' style='height:150px; display: block; margin: 0px auto;'/>";
+  
+      //화면에 레이어 추가
+      $('body')
+          .append(mask)
+  
+      //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채웁니다.
+      $('#mask').css({
+              'width' : maskWidth,
+              'height': maskHeight,
+              'opacity' :'0.3'
+      });
+  
+      //마스크 표시
+      $('#mask').show();
+  
+      //로딩중 이미지 표시
+      //$('#loadingImg').append(loadingImg);
+      $('#loadingImg').show();
+    }
+    
+    function closeLoadingWithMask() {
+        $('#mask, #loadingImg').hide();
+        $('#mask, #loadingImg').empty(); 
+    }
+    
     // -- 로딩 화면 --
   </script>
 </body>
