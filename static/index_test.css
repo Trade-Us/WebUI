@@ -92,14 +92,16 @@ header {
   transform: translateY(-20px);
   opacity: 0;
 }
-
+/*
 .input-train-file{
     border-radius: 10px;
-    left: 50%;
-    margin-right:20%;
-    margin-left: 20%;
+    margin-right:100px;
+    margin-left: 100px;
     margin-top: 10px;
+    background: transparent;
+    width: fit-content;
 }
+*/
 #advanced-option {
     background-color: white;
     border: thin;
