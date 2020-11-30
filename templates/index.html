@@ -53,9 +53,12 @@
 
     <!-- 파일 다운로드 -->
     <br><br><br>
-    <div class="input-train-file"
-      style=" background: transparent;display: flex;justify-content: space-between;">
-      <div class="inner container center-area" style="height: fit-content; display:inline-block; background:lightgray; border-radius: 10px; margin: 10px; padding: 10px;width:600px; height: fit-content;">
+    <div class="input-train-file" style=" margin-right:150px;
+    margin-left: 150px;
+    margin-top: 10px;
+    background: transparent;
+    display: flex;justify-content:space-between;">
+      <div class="inner container center-area" style="height: fit-content; display:inline-block; width: 400px; background:lightgray; border-radius: 10px; margin: 10px; padding: 10px;">
       <form action="/predict" method="POST" enctype="multipart/form-data">
         <label for="trainFile">훈련데이터 파일을 업로드 해주세요 (.csv)</label><br><br>
         <input type="file" id="trainFile" name="trainFile" accept=".csv" required>
@@ -89,9 +92,9 @@
         </form>
      </div>
       </div>
-      <div class="inner" style="display:inline-block; background:lightgray; border-radius: 10px; margin: 10px;  padding: 10px; width: 500px;">
+      <div class="inner" style="display:inline-block; background:lightgray; border-radius: 10px; margin: 10px;  padding: 10px; width: 400px">
         <form >
-          <label for="trainFile">최근 1년 (.csv)</label></br>
+          <label for="trainFile">최근 1년 주식 파일 다운로드 (.csv)</label><hr>
           <div style=" vertical-align:middle;"><div style="display:inline-block">Electronics Co., Ltd.</div><div style="display: inline-block; float: right;margin: 0;"><button type="button" ><a href="https://query1.finance.yahoo.com/v7/finance/download/005930.KS?period1=1574329632&period2=1605952032&interval=1d&events=history&includeAdjustedClose=true">Download</a></button></div></div><br>
           <div style="vertical-align:middle;"><div style="display:inline-block">SK hynix, Inc.</div><div style="display: inline-block; float: right;"><button type="button"><a href="https://query1.finance.yahoo.com/v7/finance/download/000660.KS?period1=1574330551&period2=1605952951&interval=1d&events=history&includeAdjustedClose=true">Download</a></button></div></div><br>
           <div style="vertical-align:middle;"><div style="display:inline-block">Kakao Corp. </div><div style="display: inline-block; float: right;"><button type="button"><a href="https://query1.finance.yahoo.com/v7/finance/download/035720.KS?period1=1574330495&period2=1605952895&interval=1d&events=history&includeAdjustedClose=true">Download</a></button></div></div><br>
