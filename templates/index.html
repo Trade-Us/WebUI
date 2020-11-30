@@ -62,7 +62,7 @@
       <form action="/predict" method="POST" enctype="multipart/form-data">
         <label for="trainFile">훈련데이터 파일을 업로드 해주세요 (.csv)</label><br><br>
         <input type="file" id="trainFile" name="trainFile" accept=".csv" required>
-        <input type="submit" style="float: right; width: 100px" value="훈련 시작" onclick="LoadingWithMask()">
+        <input type="submit" style="float: right; width: 100px" value="훈련 시작" onclick="LoadingWithMask(false)">
       </form>
       <div id="lstm-option" style="height:fit-content;">
         <div style="width: 100%; text-align: left;">
@@ -109,7 +109,7 @@
 
     <br><br><br>
     (% if labe %)
-    <div class="chart-container" style="width: 60%;margin-top: 5%; margin-left: 20%; margin-right: 20%;">
+    <div class="chart-container" id="predict-graph" style="width: 60%;margin-top: 5%; margin-left: 20%; margin-right: 20%;">
       <canvas id="myChart"></canvas>
     </div>
     
@@ -120,7 +120,7 @@
     <div id="dqn-option" style="height: 100px; ">
       <div class="trading_bot_start" style=" text-align:center; height: fit-content; align-content: center;">
         <form id="dqn" action="/predict/DQN" method="POST">
-          <input id="start_trading_bot" style="font-family: 'Nerko One', cursive;" type="submit" value="Start Trading" onclick="LoadingWithMask()"></input>
+          <input id="start_trading_bot" style="font-family: 'Nerko One', cursive;" type="submit" value="Start Trading" onclick="LoadingWithMask(true)"></input>
         </form>
         <div style="margin-left: 20%;">
         <button @click="show = !show" style="background-color:transparent; font-size: small; float: left;">
@@ -158,7 +158,7 @@
 
     <!-- Trading 결과 -->
     (%if dqnResult%)
-    <div style="margin-top: 5%; margin-left: 20%; margin-right: 20%; margin-bottom: 50px;">
+    <div id="trading-bot-table"style="margin-top: 5%; margin-left: 20%; margin-right: 20%; margin-bottom: 50px;">
       <table class="table table-hover" v-if=1>
         <thead>
           <tr>
@@ -274,10 +274,19 @@
     });
     // -- LSTM 결과 그래프 --
     // -- 로딩 화면 --
-    function LoadingWithMask() {
+    function LoadingWithMask(dqn) {
+      var dqnCheck = dqn;
       var filecheck = $('#trainFile').val();
-      if(filecheck)
+      if(filecheck || dqn){
+        if (dqn)
+          $('#trading-bot-table').hide();
+        else{
+          $('#predict-graph').hide();
+          $('#dqn-option').hide();
+          $('#trading-bot-table').hide();
+        }
         $('#loadingImg').show();
+      }
     }
 
     // -- 로딩 화면 --
