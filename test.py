@@ -59,7 +59,6 @@ def run_DQN():
     # help='either "train" or "test"')
     #parser.add_argument('-w', '--weights', type=str, help='a trained model weights')
     #args = parser.parse_args()
-    
     '''
     mode = 'train'
     initial_invest = 2000000
@@ -187,24 +186,25 @@ def run_DQN():
     dqnresult.clear()
     date = (today + dt.timedelta(days=step+1)).strftime("%Y-%m-%d")
     dqnresult.append([date, "", initial_invest, 0.0])
-    while step < len(portfol_val[index][0]) :
-        action = portfol_val[index][0][step] 
+    while step < len(portfol_val[index][0]):
+        action = portfol_val[index][0][step]
         step += 1
-        if step == predict_period: break
+        if step == predict_period:
+            break
         if action == 0:
             action = "Sell"
             if stock_num > 0:
-                 exchange = public_label[step] * stock_num + exchange 
+                exchange = public_label[step] * stock_num + exchange
             else:
-                 exchange = exchange
-                 action = "Hold"
+                exchange = exchange
+                action = "Hold"
             stock_num = 0
         elif action == 1:
             action = "Hold"
         elif action == 2:
             action = "Buy"
             if exchange > public_label[step]:
-                stock_num = exchange // public_label[step] 
+                stock_num = exchange // public_label[step]
                 exchange -= stock_num * public_label[step]
             else:
                 action = "Hold"
@@ -223,19 +223,17 @@ def run_DQN():
 def make_prediction():
     if request.method == 'POST':
         # 업로드 파일 처리 분기
-        #is_advanced?
-        #epoch
-        #window
-        #batch_size
-        
-        
+        # is_advanced?
+        # epoch
+        # window
+        # batch_size
 
         file = request.files["trainFile"]
         if not file:
             return render_template('index.html', labe="No Files")
-        file.save("./data/"+file.filename)
-        data = pd.read_csv('./data/'+file.filename)  # csv파일 로드
-
+        # file.save("./data/"+file.filename)
+        # data = pd.read_csv('./data/'+file.filename)  # csv파일 로드
+        data = pd.read_csv(file)
         '''
         lstm_epoch = 3
         lstm_batchsize = 10
@@ -249,7 +247,7 @@ def make_prediction():
         # 정규화를 위한 코드 추가
         max_price = max(mid_prices)
         min_price = min(mid_prices)
-        
+
         seq_len = window_size  # 며칠간의 데이터를 보고 내일것을 예측할거냐
         sequence_length = seq_len + 1  # 50개를 보고 1개를 예측 //51개 데이터를 한 window로 만듦
 
@@ -276,49 +274,50 @@ def make_prediction():
         y_train = train[:, -1]  # 나머지 1일 예측
 
         x_test = result[row:, :-1]
-        x_predict = result[row:,window_size*-1:]
+        x_predict = result[row:, window_size*-1:]
         x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
         y_test = result[row:, -1]
 
-       
         model = Sequential()  # 모델을 순차적으로 정의하는 클래스
 
-        model.add(LSTM(window_size, return_sequences=True, input_shape=(window_size, 1)))
+        model.add(LSTM(window_size, return_sequences=True,
+                       input_shape=(window_size, 1)))
 
         model.add(LSTM(64, return_sequences=False))
     #           ------ 조정하면 서 성능테스트
         model.add(Dense(1, activation='linear'))
     #              ---output 개수: 다음날 하루의 output
         model.compile(loss='mse', optimizer='rmsprop')
-        #model.load_weights('lstmweights/202011072326-lstm.h5')
-        #model.save_weights(name)
+        # model.load_weights('lstmweights/202011072326-lstm.h5')
+        # model.save_weights(name)
 
         model.summary()
-        model.fit(x_train, y_train, validation_data=(x_test, y_test), batch_size=lstm_batchsize, epochs=lstm_epoch) 
+        model.fit(x_train, y_train, validation_data=(x_test, y_test),
+                  batch_size=lstm_batchsize, epochs=lstm_epoch)
 
-        x_test_= result[:, window_size*-1:]
+        x_test_ = result[:, window_size*-1:]
         x_test_ = np.reshape(x_test_, (x_test_.shape[0], x_test_.shape[1], 1))
-        #new
+        # new
         origin_seq_in = np.array(x_test_)
         seq_in = origin_seq_in[-1]
         seq_out = seq_in
-        pred = np.zeros((predict_period,1))
-        for i in range(0,predict_period):
+        pred = np.zeros((predict_period, 1))
+        for i in range(0, predict_period):
             sample_in = np.array(seq_in)
-            sample_in = np.reshape(sample_in,(1,window_size,1))
+            sample_in = np.reshape(sample_in, (1, window_size, 1))
             pred_out = model.predict(sample_in)
-           
-            seq_in = np.append(seq_in,pred_out,axis=0)
-            seq_in = np.delete(seq_in, [0,0], axis = 0)
-            pred[i,0] = pred_out[0,0]
+
+            seq_in = np.append(seq_in, pred_out, axis=0)
+            seq_in = np.delete(seq_in, [0, 0], axis=0)
+            pred[i, 0] = pred_out[0, 0]
 
         # 역정규화
         counter_normalize = (pred * (max_price + min_price)) + min_price
         counter_normalize = counter_normalize.tolist()
-        counter_normalize.insert(0,["predicted"])
+        counter_normalize.insert(0, ["predicted"])
 
         dataframe = pd.DataFrame(counter_normalize)
-        dataframe.to_csv("data/LSTM_predicted.csv",header=False,index=False)
+        dataframe.to_csv("data/LSTM_predicted.csv", header=False, index=False)
         counter_normalize = np.array(counter_normalize)
         # 숫자가 10일 경우 0으로 처리
         #if label == '10': label = '0'
@@ -328,6 +327,7 @@ def make_prediction():
             public_label.append(float(counter_normalize[i, 0]))
         # 결과 리턴
         return render_template('index.html', labe=public_label)
+
 
 @app.route("/lstmOptions", methods=["GET"])
 def getLSTMOptions():
@@ -347,6 +347,7 @@ def getLSTMOptions():
         return render_template('index.html', labe=public_label)
     return render_template('index.html')
 
+
 @app.route("/dqnOptions", methods=["GET"])
 def getDQNOptions():
     global mode, initial_invest, episode, batch_size, public_label, dqnresult
@@ -357,15 +358,16 @@ def getDQNOptions():
     episode = int(episode)
     batch_size = request.args.get("DQN_BATCHSIZE")
     batch_size = int(batch_size)
-    
+
     if public_label and dqnresult:
         return render_template('index.html', labe=public_label, dqnResult=dqnresult)
     elif public_label:
         return render_template('index.html', labe=public_label)
     return render_template('index.html')
 
+
 if __name__ == '__main__':
-    
+
     public_label = []
     dqnresult = []
     # LSTM option
