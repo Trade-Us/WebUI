@@ -8,8 +8,8 @@
 ![Trade Us Introduction](Panel_TradeUs.jpg)
 
 ## 시연영상
-<iframe width="640" height="360" src="https://youtu.be/dCobmWr-p9k" frameborder="0" gesture="media" allowfullscreen=""></iframe>
 [![Watch the video](https://i9.ytimg.com/vi/dCobmWr-p9k/mq2.jpg?sqp=CJy0zP4F&rs=AOn4CLBmWpjxWUZ-MVHNtiV0L7WBkLMk1w)](https://youtu.be/dCobmWr-p9k)
+
 ## 저자
 
 - **모상일** - [sangil](https://github.com/MoSangIl)
